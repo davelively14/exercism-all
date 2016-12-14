@@ -14,5 +14,8 @@ defmodule Pangram do
 
   @spec pangram?(String.t) :: boolean
   def pangram?(sentence) do
+    unique_letters =
+      sentence |> String.downcase |> String.graphemes |> Enum.uniq |> Enum.filter(&(&1 =~ ~r/[a-z]/))
+    length(unique_letters) == 26
   end
 end
