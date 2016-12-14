@@ -18,6 +18,18 @@ defmodule Phone do
   """
   @spec number(String.t) :: String.t
   def number(raw) do
+    number =
+      raw |> String.graphemes |> Enum.map(&(if &1 =~ ~r/[0-9]/, do: &1, else: "")) |> to_string
+    cond do
+      String.match?(raw, ~r/[a-z]/) ->
+        "0000000000"
+      String.length(number) == 10 ->
+        number
+      String.length(number) == 11 && String.at(number, 0) == "1" ->
+        String.slice(number, 1, String.length(number) - 1)
+      true ->
+        "0000000000"
+    end
   end
 
   @doc """
@@ -39,6 +51,7 @@ defmodule Phone do
   """
   @spec area_code(String.t) :: String.t
   def area_code(raw) do
+    raw |> number |> String.slice(0, 3)
   end
 
   @doc """
@@ -60,5 +73,7 @@ defmodule Phone do
   """
   @spec pretty(String.t) :: String.t
   def pretty(raw) do
+    new_number = raw |> number
+    "(#{String.slice(new_number, 0, 3)}) #{String.slice(new_number, 3, 3)}-#{String.slice(new_number, 6, 4)}"
   end
 end
