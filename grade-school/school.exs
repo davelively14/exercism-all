@@ -10,10 +10,10 @@ defmodule School do
   """
   @spec add(map, String.t, integer) :: map
   def add(db, name, grade) do
-    if Map.has_key?(db, :students) do
-      %{students: [%{name: name, grade: grade} | Map.get(db, :students)]}
+    if Map.has_key?(db, grade) do
+      Map.get_and_update(db, grade, &({&1, &1 ++ [name]})) |> elem(1)
     else
-      %{students: [%{name: name, grade: grade}]}
+      Map.put(db, grade, [name])
     end
   end
 
@@ -22,17 +22,7 @@ defmodule School do
   """
   @spec grade(map, integer) :: [String.t]
   def grade(db, grade) do
-    get_students(db.students, grade)
-  end
-
-  defp get_students(all_students, grade), do: get_students(all_students, grade, [])
-  defp get_students([], _grade, results), do: results |> Enum.sort
-  defp get_students([head | tail], grade, results) do
-    if head.grade == grade do
-      get_students(tail, grade, [head.name | results])
-    else
-      get_students(tail, grade, results)
-    end
+    if Map.has_key?(db, grade), do: db[grade], else: []
   end
 
   @doc """
@@ -40,18 +30,6 @@ defmodule School do
   """
   @spec sort(map) :: [{integer, [String.t]}]
   def sort(db) do
-    get_all_grades(db.students)
-    |> get_names(db)
-    |> Enum.sort
-  end
-
-  defp get_all_grades(students) do
-    Enum.map(students, &(&1.grade)) |> Enum.uniq
-  end
-
-  def get_names(grades, db), do: get_names(grades, db, [])
-  def get_names([], _db, results), do: results
-  def get_names([head | tail], db, results) do
-    get_names(tail, db, [{head, grade(db, head)} | results])
+    Map.keys(db) |> Enum.sort |> Enum.map(&({&1, Map.get(db, &1) |> Enum.sort}))
   end
 end
