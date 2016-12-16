@@ -40,15 +40,7 @@ defmodule ListOps do
   @type acc :: any
   @spec reduce(list, acc, ((any, acc) -> acc)) :: acc
   def reduce([], acc, _f), do: acc
-  def reduce([head | tail], acc, f) do
-    # Did this to get the test to pass...don't think it's right, though
-    # No idea how to check if the user screwed up the order of things
-    if f.(acc, head) < 0 do
-      reduce(tail, f.(head, acc), f)
-    else
-      reduce(tail, f.(acc, head), f)
-    end
-  end
+  def reduce([head | tail], acc, f), do: reduce(tail, f.(head, acc), f)
 
   @spec append(list, list) :: list
   def append(a, b), do: append(a, b, [])
