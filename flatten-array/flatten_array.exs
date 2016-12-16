@@ -22,14 +22,4 @@ defmodule FlattenArray do
       true -> flatten(tail, result)
     end
   end
-
-  # def concat(ll), do: concat(ll, []) |> reverse
-  # def concat([], result), do: result
-  # def concat([head | tail], result) do
-  #   if is_list(head) do
-  #     concat(tail, concat(head, result))
-  #   else
-  #     concat(tail, [head | result])
-  #   end
-  # end
 end
