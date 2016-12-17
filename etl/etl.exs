@@ -8,10 +8,7 @@ defmodule ETL do
   %{"ability" => "a", "aardvark" => "a", "ballast" => "b", "beauty" =>"b"}
   """
   @spec transform(map) :: map
-  def transform(input) do
-    keys = Map.keys(input)
-    transform(keys, input, %{})
-  end
+  def transform(input), do: transform(Map.keys(input), input, %{})
   def transform([], _input, new_map), do: new_map
   def transform([head | tail], input, new_map) do
     transform(tail, input, insert_new_values(Map.get(input, head), head, new_map))
