@@ -17,6 +17,41 @@ defmodule Change do
 
   @spec generate(integer, list) :: {:ok, map} | :error
   def generate(amount, values) do
+    result =
+      make_change_map(values)
+      |> get_results(amount)
+    if result != :error do
+      {:ok, Map.merge(make_change_map(values), result)}
+    else
+      :error
+    end
+  end
 
+  def make_change_map(values), do: make_change_map(values, %{})
+  def make_change_map([], map), do: map
+  def make_change_map([head | tail], map), do: make_change_map(tail, Map.put_new(map, head, 0))
+
+  def get_results(map, amount) do
+    case result = get_results(Map.keys(map) |> Enum.reverse, amount, map) do
+      :error ->
+        if length(Map.keys(map)) > 0 do
+          [_ | smaller_values] = Map.keys(map) |> Enum.reverse
+          get_results(make_change_map(smaller_values), amount)
+        else
+          :error
+        end
+      _ ->
+        result
+    end
+  end
+  def get_results([], amount, result) do
+    if amount == 0, do: result, else: :error
+  end
+  def get_results(values = [head | tail], amount, result) do
+    if amount - head >= 0 do
+      get_results(values, amount - head, Map.update!(result, head, &(&1 + 1)))
+    else
+      get_results(tail, amount, result)
+    end
   end
 end
