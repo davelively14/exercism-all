@@ -11,26 +11,30 @@ defmodule Markdown do
     "<h1>Header!</h1><ul><li><em>Bold Item</em></li><li><i>Italic Item</i></li></ul>"
   """
   @spec parse(String.t) :: String.t
-  def parse(m) do
-    patch(Enum.join(Enum.map(String.split(m, "\n"), fn(t) -> process(t) end)))
+  def parse(markdown) do
+    markdown |> String.split("\n") |> Enum.map(&process(&1)) |> Enum.join |> patch
   end
 
-  defp process(t) do
-    if String.starts_with?(t, "#") || String.starts_with?(t, "*") do
-      if String.starts_with?(t, "#") do
-        enclose_with_header_tag(parse_header_md_level(t))
-      else
-        parse_list_md_level(t)
-      end
-    else
-      enclose_with_paragraph_tag(String.split(t))
+  # Changed nested 'if' statements to a cond do
+  defp process(text) do
+    cond do
+      String.starts_with?(text, "#") ->
+        text |> parse_header_md_level |> enclose_with_header_tag
+      String.starts_with?(text, "*") ->
+        text |> parse_list_md_level
+      true ->
+        text |> String.split |> enclose_with_paragraph_tag
     end
   end
 
+  # Deterines header level
+  # This will count the number of # and display the result as a tuple. Ex:
+  # "#### This is the title" will become {4, "This is the title"}
   defp parse_header_md_level(hwt) do
-    [h | t] = String.split(hwt)
-    {to_string(String.length(h)), Enum.join(t, " ")}
+    [head | tail] = String.split(hwt)
+    {head |> String.length |> to_string, tail |> Enum.join(" ")}
   end
+
 
   defp parse_list_md_level(l) do
     t = String.split(String.trim_leading(l, "* "))
