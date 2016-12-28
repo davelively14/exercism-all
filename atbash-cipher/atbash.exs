@@ -8,12 +8,11 @@ defmodule Atbash do
   "xlnko vgvob rmhvx fiv"
   """
   @spec encode(String.t) :: String.t
-  def encode(plaintext), do: encode(plaintext |> String.downcase |> String.codepoints |> Enum.filter(&(&1 =~ ~r/[a-z0-9]/)), [])
-  def encode([], result), do: result |> Enum.reverse |> add_spaces |> Enum.reverse |> to_string
-  # def encode(plaintext, result) when rem(length(result), 6) == 0, do: encode(plaintext, [" " | result])
+  def encode(plaintext), do: encode(plaintext |> String.downcase |> String.graphemes |> Enum.filter(&(&1 =~ ~r/[a-z0-9]/)) |> add_spaces, [])
+  def encode([], result), do: result |> to_string
   def encode([head | tail], result) do
     <<codepoint::utf8>> = head
-    case head =~ ~r/[a-z]/ do
+    case head =~ ~r/[a-z]/  do
       true -> encode(tail, [<<(25 - (codepoint - ?a)) + 97>> | result])
       _ -> encode(tail, [head | result])
     end
