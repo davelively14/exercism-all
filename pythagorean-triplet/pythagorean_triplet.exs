@@ -26,8 +26,16 @@ defmodule Triplet do
   Generates a list of pythagorean triplets from a given min (or 1 if no min) to a given max.
   """
   @spec generate(non_neg_integer, non_neg_integer) :: [list(non_neg_integer)]
-  def generate(min, max), do: [min, min + 1, min * min + (min + 1) * (min + 1)]
-  
+  def generate(min, max), do: generate(min, max, [min, min + 1, min * min + (min + 1) * (min + 1)])
+  def generate(min, max, [a, b, c_raw]) do
+    IO.inspect %{a: a, b: b, c_raw: c_raw}
+    cond do
+      :math.sqrt(c_raw) > max -> [0, 0, 0]
+      rem(:math.sqrt(c_raw) * 10 |> round, 10) == 0 -> [a, b, :math.sqrt(c_raw) |> round]
+      true -> generate(min, max, [a + 1, b + 1, (a + 1) * (a + 1) + (b + 1) * (b + 1)])
+    end
+  end
+
   @doc """
   Generates a list of pythagorean triplets from a given min to a given max, whose values add up to a given sum.
   """
