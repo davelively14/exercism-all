@@ -42,7 +42,7 @@ defmodule PythagoreanTripletTest do
     assert Enum.map(triplets, &Triplet.product/1) == [3840]
   end
 
-  @tag :pending
+
   test "triplets where sum is 180 and max factor is 100" do
     triplets = Triplet.generate(1, 100, 180)
     assert Enum.map(triplets, &Triplet.product/1) == [118080, 168480, 202500]
