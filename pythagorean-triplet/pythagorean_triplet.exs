@@ -54,9 +54,9 @@ defmodule Triplet do
   def check_trips_vs_sum(triplets, sum), do: check_trips_vs_sum(triplets, sum, [])
   def check_trips_vs_sum([], _sum, result), do: result
   def check_trips_vs_sum([head | tail], sum, result) do
-    IO.inspect %{head: head, sum: sum, result: result}
+    # IO.inspect %{head: head, sum: sum, result: result}
     cond do
-      sum(head) == sum -> check_trips_vs_sum(tail, sum, result ++ head)
+      sum(head) == sum -> check_trips_vs_sum(tail, sum, result ++ [head])
       true -> check_trips_vs_sum(tail, sum, result)
     end
   end
