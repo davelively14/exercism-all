@@ -36,7 +36,7 @@ defmodule PythagoreanTripletTest do
     assert Enum.map(triplets, &Triplet.product/1) == [60, 480]
   end
 
-  @tag :pending
+  # @tag :pending
   test "triplets from 11 up to 20" do
     triplets = Triplet.generate(11, 20)
     assert Enum.map(triplets, &Triplet.product/1) == [3840]
